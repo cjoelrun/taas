@@ -1,0 +1,13 @@
+server:
+  build: .
+  links:
+   - db
+  ports:
+    - '5000:5000'
+  environment:
+    FLASK_APP: /taas/taas/app.py
+
+db:
+  image: postgres:9.4
+  volumes:
+    - /tmp/usr/local/var/postgres:/var/lib/postgresql/data
