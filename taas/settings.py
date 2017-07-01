@@ -16,7 +16,7 @@ class ProdConfig(Config):
 
     ENV = 'prod'
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/example'  # TODO: Change me
+    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/taas'  # TODO: Change me
 
 
 class DevConfig(Config):
@@ -25,6 +25,6 @@ class DevConfig(Config):
     ENV = 'dev'
     DEBUG = True
     DB_NAME = 'dev'
-    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/example'  # TODO: Change me
+    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/taas'  # TODO: Change me
 
 
