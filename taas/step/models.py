@@ -10,3 +10,15 @@ class Step(Model):
     order = db.Column(db.Integer)
 
     execution_runs = db.relationship("ExecutionRun", backref="step")
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'test_case_id': self.test_case_id,
+            'execution_id': self.execution_id,
+            'order': self.order,
+            'execution_runs': self.serialize_execution_runs()
+        }
+
+    def serialize_execution_runs(self):
+        return [item.serialize() for item in self.execution_runs]
