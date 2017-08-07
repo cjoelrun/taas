@@ -9,3 +9,16 @@ class Parameter(Model):
     # TODO: Constrain
     type = db.Column(db.String)
     data = db.Column(JSONB)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.description,
+            'type': self.type,
+            'data': self.data,
+        }
+
+    def update_fields(self, json):
+        self.data = json.get('data', None)
+        self.name = json.get('name', None)
+        self.type = json.get('type', None)
