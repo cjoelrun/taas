@@ -15,3 +15,23 @@ class TestRun(Model):
     runtime_data = db.Column(JSONB)
 
     execution_runs = relationship("ExecutionRun", backref='TestRun')
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'test_case_id': self.test_case_id,
+            'message': self.message,
+            'start_time': '',  # TODO
+            'end_time': '',  # TODO
+            'status': self.status,
+            'runtime_data': self.runtime_data,
+            'execution_runs': self.serialize_execution_runs()
+        }
+
+    def serialize_execution_runs(self):
+        """
+       Return object's relations in easily serializeable format.
+       NB! Calls many2many's serialize property.
+       """
+        # return [item.serialize() for item in self.many2many]
+        return []
