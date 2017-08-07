@@ -29,9 +29,4 @@ class TestRun(Model):
         }
 
     def serialize_execution_runs(self):
-        """
-       Return object's relations in easily serializeable format.
-       NB! Calls many2many's serialize property.
-       """
-        # return [item.serialize() for item in self.many2many]
-        return []
+        return [item.serialize() for item in self.execution_runs]
