@@ -24,9 +24,11 @@ class Execution(Model):
         }
 
     def serialize_steps(self):
-        """
-       Return object's relations in easily serializeable format.
-       NB! Calls many2many's serialize property.
-       """
-        # return [item.serialize() for item in self.many2many]
-        return []
+        return [item.serialize() for item in self.steps]
+
+    def update_fields(self, json):
+        self.data = json.get('data', None)
+        self.description = json.get('description', None)
+        self.strategy = json.get('strategy', None)
+        self.type = json.get('type', None)
+

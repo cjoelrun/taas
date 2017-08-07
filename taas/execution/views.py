@@ -13,7 +13,7 @@ def executions():
 
     if request.method == 'POST':
         execution = Execution()
-        _set_fields(execution, request.json)
+        execution.update_fields(request.json)
         db.session.add(execution)
         db.session.commit()
 
@@ -30,7 +30,7 @@ def executions(db_id):
         return jsonify(execution.serialize())
 
     if request.method == 'PUT':
-        _set_fields(execution, request.json)
+        execution.update_fields(request.json)
         db.session.commit()
         return jsonify(execution.serialize()), 200
 
@@ -39,10 +39,3 @@ def executions(db_id):
             db.session.delete(execution)
             db.session.commit()
         return '', 204
-
-
-def _set_fields(execution, json):
-    execution.data = json.get('data', None)
-    execution.description = json.get('description', None)
-    execution.strategy = json.get('strategy', None)
-    execution.type = json.get('type', None)
