@@ -13,7 +13,7 @@ class Parameter(Model):
     def serialize(self):
         return {
             'id': self.id,
-            'name': self.description,
+            'name': self.name,
             'type': self.type,
             'data': self.data,
         }

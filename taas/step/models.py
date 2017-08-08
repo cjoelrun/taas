@@ -22,3 +22,8 @@ class Step(Model):
 
     def serialize_execution_runs(self):
         return [item.serialize() for item in self.execution_runs]
+
+    def update_fields(self, json):
+        self.test_case_id = json.get('test_case_id', None)
+        self.execution_id = json.get('execution_id', None)
+        self.order = json.get('order', None)

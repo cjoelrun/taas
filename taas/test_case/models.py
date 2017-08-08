@@ -15,7 +15,7 @@ class TestCase(Model):
     description = db.Column(db.String)
     expected_success = db.Column(db.Boolean, default=True)
 
-    suite_id = db.Column(db.Integer, db.ForeignKey('suite.id'))
+    test_suite_id = db.Column(db.Integer, db.ForeignKey('test_suite.id'))
 
     test_runs = db.relationship("TestRun", backref='test_case', lazy='dynamic')
     steps = db.relationship("Step", backref='test_cases', lazy='dynamic')
@@ -28,7 +28,7 @@ class TestCase(Model):
             'name': self.name,
             'description': self.description,
             'expected_success': self.expected_success,
-            'suite_id': self.suite_id,
+            'test_suite_id': self.test_suite_id,
             'test_runs': self.serialize_test_runs(),
             'steps': self.serialize_steps(),
             'parameters': self.serialize_parameters()
@@ -48,4 +48,4 @@ class TestCase(Model):
         self.name = json.get('name', None)
         self.description = json.get('description', None)
         self.expected_success = json.get('expected_success', None)
-        self.suite_id = json.get('suite_id', None)
+        self.test_suite_id = json.get('test_suite_id', None)
