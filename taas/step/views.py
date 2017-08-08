@@ -6,11 +6,6 @@ from taas.database import db
 blueprint = Blueprint('step', __name__, url_prefix='/steps')
 
 
-@blueprint.route('/')
-def steps():
-    return jsonify(Step.query.all())
-
-
 @blueprint.route('', methods=['GET', 'POST'])
 def steps():
     if request.method == 'GET':
@@ -26,7 +21,7 @@ def steps():
 
 
 @blueprint.route('/<db_id>', methods=['GET', 'PUT', 'DELETE'])
-def steps(db_id):
+def steps_by_id(db_id):
     step = Step.query.get(db_id)
 
     if request.method == 'GET':

@@ -21,7 +21,7 @@ def executions():
 
 
 @blueprint.route('/<db_id>', methods=['GET', 'PUT', 'DELETE'])
-def executions(db_id):
+def executions_by_id(db_id):
     execution = Execution.query.get(db_id)
 
     if request.method == 'GET':

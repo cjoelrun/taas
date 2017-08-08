@@ -21,7 +21,7 @@ def parameters():
 
 
 @blueprint.route('/<db_id>', methods=['GET', 'PUT', 'DELETE'])
-def parameters(db_id):
+def parameters_by_id(db_id):
     parameter = Parameter.query.get(db_id)
 
     if request.method == 'GET':

@@ -13,7 +13,7 @@ def execution_runs():
 
 
 @blueprint.route('/<db_id>', methods=['GET', 'DELETE'])
-def test_runs(db_id):
+def test_runs_by_id(db_id):
     execution_run = ExecutionRun.query.get(db_id)
 
     if request.method == 'GET':

@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, request
 from taas.test_case.models import TestCase
 from taas.database import db
 
-blueprint = Blueprint('test_case', __name__, url_prefix='/test_cases')
+blueprint = Blueprint('test_case', __name__, url_prefix='/test-cases')
 
 
 @blueprint.route('', methods=['GET', 'POST'])
@@ -21,7 +21,7 @@ def test_cases():
 
 
 @blueprint.route('/<db_id>', methods=['GET', 'PUT', 'DELETE'])
-def test_cases(db_id):
+def test_cases_by_id(db_id):
     test_case = TestCase.query.get(db_id)
 
     if request.method == 'GET':

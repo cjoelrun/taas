@@ -20,7 +20,7 @@ def test_suite_runs():
 
 
 @blueprint.route('/<db_id>', methods=['GET', 'PUT', 'DELETE'])
-def test_suite_runs(db_id):
+def test_suite_runs_by_id(db_id):
     test_suite_run = TestSuiteRun.query.get(db_id)
 
     if request.method == 'GET':
