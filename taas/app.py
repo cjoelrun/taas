@@ -3,15 +3,18 @@ from flask import Flask
 from taas import collection, test_case, execution, execution_run, \
     parameter, step, test_run, test_suite, test_suite_run
 from taas.database import db
+from taas.serialization import ma
 from taas.settings import DevConfig
 
 
 def create_app(config=DevConfig):
     app = Flask(__name__)
     app.config.from_object(config)
-    register_blueprints(app)
     db.init_app(app)
     db.create_all(app=app)
+    ma.init_app(app)
+    register_blueprints(app)
+
     return app
 
 

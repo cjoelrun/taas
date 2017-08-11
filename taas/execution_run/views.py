@@ -8,18 +8,21 @@ blueprint = Blueprint('execution_run', __name__, url_prefix='/execution_runs')
 
 @blueprint.route('', methods=['GET'])
 def execution_runs():
+    from taas.execution_run.schemas import execution_run_schema
     if request.method == 'GET':
-        return jsonify([er.serialize() for er in ExecutionRun.query.all()])
+        all_runs = ExecutionRun.query.all()
+        return execution_run_schema.dumps(all_runs, many=True)
 
 
 @blueprint.route('/<db_id>', methods=['GET', 'DELETE'])
 def test_runs_by_id(db_id):
+    from taas.execution_run.schemas import execution_run_schema
     execution_run = ExecutionRun.query.get(db_id)
 
     if request.method == 'GET':
         if execution_run is None:
             return '{} not found.'.format(db_id), 404
-        return jsonify(execution_run.serialize())
+        return execution_run_schema.dumps(execution_run).data
 
     if request.method == 'DELETE':
         if execution_run is not None:

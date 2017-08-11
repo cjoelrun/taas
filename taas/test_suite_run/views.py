@@ -1,35 +1,32 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, request
 from taas.test_suite_run.models import TestSuiteRun
 from taas.database import db
 
 blueprint = Blueprint('test_suite_run', __name__, url_prefix='/test_suite_runs')
 
 
-@blueprint.route('', methods=['GET', 'POST'])
+@blueprint.route('', methods=['GET'])
 def test_suite_runs():
+    from taas.test_suite_run.schemas import test_suite_run_schema
+
     if request.method == 'GET':
-        return jsonify([e.serialize() for e in TestSuiteRun.query.all()])
-
-    if request.method == 'POST':
-        test_suite_run = TestSuiteRun()
-        test_suite_run.update_fields(request.json)
-        db.session.add(test_suite_run)
-        db.session.commit()
-
-        return jsonify(test_suite_run.serialize()), 201
+        all_test_runs = TestSuiteRun.query.all()
+        return test_suite_run_schema.dumps(all_test_runs, many=True)
 
 
-@blueprint.route('/<db_id>', methods=['GET', 'PUT', 'DELETE'])
+@blueprint.route('/<db_id>', methods=['GET', 'DELETE'])
 def test_suite_runs_by_id(db_id):
-    test_suite_run = TestSuiteRun.query.get(db_id)
+    from taas.test_suite_run.schemas import test_suite_run_schema
+
+    test_run = TestSuiteRun.query.get(db_id)
 
     if request.method == 'GET':
-        if test_suite_run is None:
+        if test_run is None:
             return '{} not found.'.format(db_id), 404
-        return jsonify(test_suite_run.serialize())
+        return test_suite_run_schema.dumps(test_run).data
 
     if request.method == 'DELETE':
-        if test_suite_run is not None:
-            db.session.delete(test_suite_run)
+        if test_run is not None:
+            db.session.delete(test_run)
             db.session.commit()
         return '', 204

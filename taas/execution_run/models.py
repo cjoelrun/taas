@@ -1,4 +1,5 @@
 from taas.database import Model, db
+from taas.serialization import Schema
 
 
 class ExecutionRun(Model):
@@ -7,13 +8,3 @@ class ExecutionRun(Model):
     message = db.Column(db.String)
     context = db.Column(db.String)
     status = db.Column(db.String)
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'test_run_id': self.test_case_id,
-            'step_id': self.step_id,
-            'message': self.message,
-            'context': self.context,
-            'status': self.status,
-        }

@@ -1,4 +1,3 @@
-from sqlalchemy.orm import relationship
 
 from taas.database import Model, db
 
@@ -10,20 +9,3 @@ class Step(Model):
     order = db.Column(db.Integer)
 
     execution_runs = db.relationship("ExecutionRun", backref="step")
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'test_case_id': self.test_case_id,
-            'execution_id': self.execution_id,
-            'order': self.order,
-            'execution_runs': self.serialize_execution_runs()
-        }
-
-    def serialize_execution_runs(self):
-        return [item.serialize() for item in self.execution_runs]
-
-    def update_fields(self, json):
-        self.test_case_id = json.get('test_case_id', None)
-        self.execution_id = json.get('execution_id', None)
-        self.order = json.get('order', None)

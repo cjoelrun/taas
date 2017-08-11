@@ -15,18 +15,3 @@ class TestRun(Model):
     runtime_data = db.Column(JSONB)
 
     execution_runs = relationship("ExecutionRun", backref='TestRun')
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'test_case_id': self.test_case_id,
-            'message': self.message,
-            'start_time': '',  # TODO
-            'end_time': '',  # TODO
-            'status': self.status,
-            'runtime_data': self.runtime_data,
-            'execution_runs': self.serialize_execution_runs()
-        }
-
-    def serialize_execution_runs(self):
-        return [item.serialize() for item in self.execution_runs]
