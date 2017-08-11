@@ -3,6 +3,13 @@
 import os
 
 
+def get_db_uri():
+    db_uri = os.environ.get('DATABASE_URI', 'localhost')
+    db_user = os.environ.get('DATABASE_USER', 'postgres')
+    db_pass = os.environ.get('DATABASE_PASS', 'mysecretpassword')
+    return 'postgresql://{}:{}@{}/taas'.format(db_user, db_pass, db_uri)
+
+
 class Config(object):
     """Base configuration."""
 
@@ -16,7 +23,7 @@ class ProdConfig(Config):
 
     ENV = 'prod'
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/taas'
+    SQLALCHEMY_DATABASE_URI = get_db_uri()
 
 
 class DevConfig(Config):
@@ -24,6 +31,4 @@ class DevConfig(Config):
 
     ENV = 'dev'
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/taas'
-
-
+    SQLALCHEMY_DATABASE_URI = get_db_uri()
