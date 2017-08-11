@@ -1,4 +1,5 @@
 from taas.database import Model, db
+from taas.serialization import Schema
 
 
 class ExecutionRun(Model):

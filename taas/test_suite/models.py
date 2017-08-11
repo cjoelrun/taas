@@ -15,5 +15,3 @@ class TestSuite(Model):
     test_cases = db.relationship("TestCase", secondary=test_cases, backref=db.backref('test_cases', lazy='dynamic'))
 
     test_suite_runs = db.relationship("TestSuiteRun", backref='test_suite', lazy='dynamic')
-
-

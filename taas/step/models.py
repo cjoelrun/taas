@@ -1,4 +1,3 @@
-from sqlalchemy.orm import relationship
 
 from taas.database import Model, db
 

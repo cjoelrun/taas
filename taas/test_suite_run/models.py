@@ -18,4 +18,3 @@ class TestSuiteRun(Model):
     runtime_data = db.Column(JSONB)
 
     test_case_runs = db.relationship("TestRun", secondary=test_case_runs, backref=db.backref('test_runs', lazy='dynamic'))
-
