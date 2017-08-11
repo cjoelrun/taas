@@ -1,6 +1,6 @@
 from flask import Flask
 
-from taas import collection, test_case, execution, execution_run, \
+from taas import test_case, execution, execution_run, \
     parameter, step, test_run, test_suite, test_suite_run
 from taas.database import db
 from taas.serialization import ma
@@ -20,7 +20,6 @@ def create_app(config=DevConfig):
 
 def register_blueprints(app):
     app.register_blueprint(test_case.views.blueprint)
-    app.register_blueprint(collection.views.blueprint)
     app.register_blueprint(execution.views.blueprint)
     app.register_blueprint(execution_run.views.blueprint)
     app.register_blueprint(parameter.views.blueprint)
