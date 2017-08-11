@@ -1,7 +1,7 @@
 FROM alpine:3.5
 
 # Install python and pip
-RUN apk add --update py2-pip
+RUN apk add --update py2-pip postgresql-dev gcc python2-dev musl-dev
 
 # upgrade pip
 RUN pip install --upgrade pip
