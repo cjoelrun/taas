@@ -16,6 +16,8 @@ class Config(object):
     APP_DIR = os.path.abspath(os.path.dirname(__file__))  # This directory
     PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    CELERY_BROKER_URL='amqp://guest@localhost//'
+    CELERY_RESULT_BACKEND='amqp://guest@localhost//'
 
 
 class ProdConfig(Config):
