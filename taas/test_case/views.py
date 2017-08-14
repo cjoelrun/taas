@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, request
 
 from taas.test_case.models import TestCase
 from taas.database import db
