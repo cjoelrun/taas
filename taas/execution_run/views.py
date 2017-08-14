@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, request
 from taas.execution_run.models import ExecutionRun
 from taas.database import db
 
-blueprint = Blueprint('execution_run', __name__, url_prefix='/execution_runs')
+blueprint = Blueprint('execution_run', __name__, url_prefix='/execution-runs')
 
 
 @blueprint.route('', methods=['GET'])
