@@ -2,7 +2,7 @@ from flask import Flask
 from sqlalchemy_utils import database_exists, create_database
 
 from taas import test_case, execution, execution_run, \
-    parameter, step, test_run, test_suite, test_suite_run
+    parameter, step, test_run, test_suite, test_suite_run, runner
 from taas.database import db
 from taas.serialization import ma
 from taas.settings import DevConfig
@@ -29,6 +29,7 @@ def register_blueprints(app):
     app.register_blueprint(test_run.views.blueprint)
     app.register_blueprint(test_suite.views.blueprint)
     app.register_blueprint(test_suite_run.views.blueprint)
+    app.register_blueprint(runner.views.blueprint)
 
 
 def create_db(config):
