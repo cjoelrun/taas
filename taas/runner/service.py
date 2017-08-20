@@ -5,16 +5,53 @@ from taas.step.models import Step
 from taas.test_case.models import TestCase
 from taas.test_run.models import TestRun
 from taas.database import db
+from taas.test_suite.models import TestSuite
+from taas.test_suite_run.models import TestSuiteRun
 
 
 class RunService:
+    def __init__(self):
+        pass
+
+    def run_test_suite(self, test_suite_id):
+        test_suite = TestSuite.query.get(test_suite_id)
+
+        test_suite_run = TestSuiteRun()
+        test_suite_run.status = "Started"
+        test_suite_run.test_suite_id = test_suite_id
+
+        db.session.add(test_suite_run)
+        db.session.commit()
+
+        for test_case in test_suite.test_cases:
+            test_case_run = self._run_test_case(test_case)
+            test_suite_run.test_case_runs.append(test_case_run)
+            db.session.commit()
+
+        return test_suite_run
 
     def run_test_case(self, test_case_id):
         test_case = TestCase.query.get(test_case_id)
+        self._run_test_case(test_case)
 
+    def run_next_step(self, test_run_id):
+        test_run = TestRun.query.get(test_run_id)
+        self._run_next_step(test_run)
+
+    def finish_test_case_run(self, test_run_id):
+        test_run = TestRun.query.get(test_run_id)
+        self._finish_test_case_run(test_run)
+
+    def _run_test_case(self, test_case):
+        test_case_run = self._create_test_run(test_case)
+        print('Starting run {} for test case {}'.format(test_case_run.id, test_case.id))
+        self.run_next_step(test_case_run.id)
+        return test_case_run
+
+    def _create_test_run(self, test_case):
         test_case_run = TestRun()
-        test_case_run.status = "started"
-        test_case_run.test_case_id = test_case_id
+        test_case_run.status = "Started"
+        test_case_run.test_case_id = test_case.id
 
         db.session.add(test_case_run)
         db.session.commit()
@@ -27,13 +64,9 @@ class RunService:
             db.session.add(execution_run)
         db.session.commit()
 
-        print('Starting run {} for test case {}'.format(test_case_run.id, test_case_id))
-        self.run_next_step(test_case_run.id)
         return test_case_run
 
-    def run_next_step(self, test_run_id):
-        test_run = TestRun.query.get(test_run_id)
-
+    def _run_next_step(self, test_run):
         for execution_run in test_run.execution_runs:
             if execution_run.status is None:
                 print('Running next execution {}'.format(execution_run.id))
@@ -48,6 +81,9 @@ class RunService:
                 return  # end on next execution run
 
         # no more exeuction runs, test_run must be over
-        print('Finished test run {}'.format(test_run_id))
+        self._finish_test_case_run(test_run)
+
+    def _finish_test_case_run(self, test_run):
+        print('Finished test run {}'.format(test_run.id))
         test_run.status = 'Success'
-        return
+        db.session.commit()
