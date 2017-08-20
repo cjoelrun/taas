@@ -9,6 +9,9 @@ def get_db_uri():
     db_pass = os.environ.get('DATABASE_PASS', 'mysecretpassword')
     return 'postgresql://{}:{}@{}/taas'.format(db_user, db_pass, db_uri)
 
+def get_api_url():
+    api_url = os.environ.get('API_CALLBACK_URL', 'http://localhost:5000')
+    return api_url
 
 class Config(object):
     """Base configuration."""
@@ -18,6 +21,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     CELERY_BROKER_URL='amqp://guest@localhost//'
     CELERY_RESULT_BACKEND='amqp://guest@localhost//'
+    API_CALLBACK_URL=get_api_url()
 
 
 class ProdConfig(Config):

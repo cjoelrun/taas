@@ -17,10 +17,8 @@ def run_test_case(db_id):
 def finish_execution_run(db_id):
     print('Finishing execution run {}'.format(db_id))
     execution_run = ExecutionRun.query.get(db_id)
-    execution_run.status = 'Success'
-    db.session.commit()
-
-    RunService().run_next_step(execution_run.test_run_id)
+    if execution_run.status == 'Success':
+        RunService().run_next_step(execution_run.test_run_id)
 
     return '', 200
 

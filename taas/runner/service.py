@@ -37,13 +37,13 @@ class RunService:
         for execution_run in test_run.execution_runs:
             if execution_run.status is None:
                 print('Running next execution {}'.format(execution_run.id))
-                execution_run.status = 'Started'
+                execution_run.status = 'Submitted'
                 db.session.commit()
                 # TODO this is ugly af
                 step = Step.query.get(execution_run.step_id)
                 execution = Execution.query.get(step.execution_id)
                 parameters = {'key': 'value'}
-                from taas.async import run_strategy
+                from taas.tasks import run_strategy
                 run_strategy.delay(execution_run.id, execution.strategy, parameters)
                 return  # end on next execution run
 

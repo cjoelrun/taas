@@ -10,6 +10,7 @@ def make_celery(app=None):
         broker=app.config['CELERY_BROKER_URL'],
     )
     celery.conf.update(app.config)
+    celery.callback_url = app.config['API_CALLBACK_URL']
     TaskBase = celery.Task
 
     class ContextTask(TaskBase):
@@ -21,11 +22,3 @@ def make_celery(app=None):
     return celery
 
 celery = make_celery()
-
-
-@celery.task
-def run_strategy(execution_run_id, strategy_name, parameters):
-    print('Running strategy {} with {}'.format(strategy_name, parameters))
-    import requests
-    response = requests.post('http://localhost:5000/run/execution-runs/{}/finish'.format(execution_run_id))
-    print(response)
