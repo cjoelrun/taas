@@ -19,7 +19,13 @@ def finish_execution_run(db_id):
     execution_run = ExecutionRun.query.get(db_id)
     if execution_run.status == 'Success':
         RunService().run_next_step(execution_run.test_run_id)
-
+    else:
+        RunService().finish_test_case_run(execution_run.test_run_id)
     return '', 200
 
 
+@blueprint.route('/test-suites/<db_id>', methods=['POST'])
+def run_test_suite(db_id):
+    from taas.test_suite_run.schemas import test_suite_run_schema
+    test_suite_run = RunService().run_test_suite(db_id)
+    return test_suite_run_schema.dumps(test_suite_run).data, 200
