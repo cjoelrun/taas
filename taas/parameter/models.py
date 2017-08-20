@@ -9,3 +9,4 @@ class Parameter(Model):
     # TODO: Constrain
     type = db.Column(db.String)
     data = db.Column(JSONB)
+    parameter_group_id = db.Column(db.Integer, db.ForeignKey('parameter_group.id'))
