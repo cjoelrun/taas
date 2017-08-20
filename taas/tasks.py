@@ -14,7 +14,8 @@ def run_strategy(execution_run_id, strategy_name, parameters):
     print('Running strategy {} with {}'.format(strategy_name, parameters))
 
     execution_run.status = 'Success'
-    db.session.commit()
+    session.commit()
+    session.close()
 
     response = requests.post('{}/run/execution-runs/{}/finish'.format(celery.callback_url, execution_run_id))
     print(response)
