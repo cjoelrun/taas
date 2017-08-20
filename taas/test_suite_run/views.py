@@ -2,7 +2,7 @@ from flask import Blueprint, request
 from taas.test_suite_run.models import TestSuiteRun
 from taas.database import db
 
-blueprint = Blueprint('test_suite_run', __name__, url_prefix='/test_suite_runs')
+blueprint = Blueprint('test_suite_run', __name__, url_prefix='/test-suite-runs')
 
 
 @blueprint.route('', methods=['GET'])
