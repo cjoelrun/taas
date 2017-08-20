@@ -17,4 +17,6 @@ class TestSuiteRun(Model):
     status = db.Column(db.String)
     runtime_data = db.Column(JSONB)
 
+    parameter_id = db.Column(db.Integer, db.ForeignKey('parameter.id'))
+
     test_case_runs = db.relationship("TestRun", secondary=test_case_runs, backref=db.backref('test_runs', lazy='dynamic'))

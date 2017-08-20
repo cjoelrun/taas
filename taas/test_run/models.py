@@ -14,4 +14,6 @@ class TestRun(Model):
     status = db.Column(db.String)
     runtime_data = db.Column(JSONB)
 
+    parameter_id = db.Column(db.Integer, db.ForeignKey('parameter.id'))
+
     execution_runs = relationship("ExecutionRun", backref='TestRun')
