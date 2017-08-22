@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, request
 
 from taas.execution_run.models import ExecutionRun
 from taas.database import db
@@ -14,7 +14,7 @@ def execution_runs():
         return execution_run_schema.dumps(all_runs, many=True)
 
 
-@blueprint.route('/<db_id>', methods=['GET', 'DELETE'])
+@blueprint.route('/<db_id>', methods=['GET', 'PUT', 'DELETE'])
 def test_runs_by_id(db_id):
     from taas.execution_run.schemas import execution_run_schema
     execution_run = ExecutionRun.query.get(db_id)
@@ -23,6 +23,11 @@ def test_runs_by_id(db_id):
         if execution_run is None:
             return '{} not found.'.format(db_id), 404
         return execution_run_schema.dumps(execution_run).data
+
+    if request.method == 'PUT':
+        execution_run_schema.load(request.json, db.session, execution_run)
+        db.session.commit()
+        return execution_run_schema.dumps(execution_run).data, 200
 
     if request.method == 'DELETE':
         if execution_run is not None:

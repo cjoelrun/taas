@@ -15,7 +15,7 @@ def test_runs():
         return test_run_schema.dumps(all_test_runs, many=True)
 
 
-@blueprint.route('/<db_id>', methods=['GET', 'DELETE'])
+@blueprint.route('/<db_id>', methods=['GET', 'PUT', 'DELETE'])
 def test_runs_by_id(db_id):
     from taas.test_run.schemas import test_run_schema
 
@@ -25,6 +25,11 @@ def test_runs_by_id(db_id):
         if test_run is None:
             return '{} not found.'.format(db_id), 404
         return test_run_schema.dumps(test_run).data
+
+    if request.method == 'PUT':
+        test_run_schema.load(request.json, db.session, test_run)
+        db.session.commit()
+        return test_run_schema.dumps(test_run).data, 200
 
     if request.method == 'DELETE':
         if test_run is not None:
