@@ -1,7 +1,9 @@
 from flask import Blueprint, request
+from taas.database import db
 from taas.runner.service import create_test_case_run, create_test_suite_run, execute_test_case_run, execute_test_suite_run
 from taas.test_case.models import TestCase
 from taas.test_suite.models import TestSuite
+from taas.test_suite_run.models import TestSuiteRun
 
 blueprint = Blueprint('runner', __name__, url_prefix='/run')
 
@@ -22,3 +24,15 @@ def run_test_suite(db_id):
     test_suite_run = create_test_suite_run(test_suite, request.json['parameter_id'])
     execute_test_suite_run(test_suite_run)
     return test_suite_run_schema.dumps(test_suite_run).data, 200
+
+
+@blueprint.route('/test-suites/finish', methods=['POST'])
+def finish_test_suite_runs():
+    unfinished_suite_runs = TestSuiteRun.query.filter(TestSuiteRun.status == 'Running')
+    for suite_run in unfinished_suite_runs:
+        running_cases = [rc for rc in suite_run.test_case_runs if rc.status is None or rc.status == 'Running']
+        if len(running_cases) == 0:
+            suite_run.status = 'Finished'
+            db.session.commit()
+
+    return '', 200

@@ -11,6 +11,11 @@ class _BaseClient:
         response = requests.get(self.url)
         return response.json()
 
+    def get(self, **kwargs):
+        print(kwargs)
+        response = requests.get(self.url, params=kwargs)
+        return response.json()
+
     def get_by_id(self, db_id):
         response = requests.get(self.url+'/{}'.format(db_id))
         return response.json()
@@ -28,13 +33,30 @@ class _BaseClient:
         return None
 
 
+class _RunnerClient:
+    def __init__(self, base_url):
+        self._base_url = base_url
+
+    def run_test_case(self, db_id):
+        response = requests.post(self._base_url+'/run/test-cases/{}'.format(db_id))
+        return response.json()
+
+    def run_test_suite(self, db_id):
+        response = requests.post(self._base_url+'/run/test-suites/{}'.format(db_id))
+        return response.json()
+
+    def finish_test_suites(self):
+        response = requests.post(self._base_url+'/run/test-suites/finish')
+        return
+
+
 class TaasClient:
     def __init__(self, base_url):
         self.execution = _BaseClient(base_url, '/executions')
         self.execution_run = _BaseClient(base_url, '/execution-runs')
         self.parameter = _BaseClient(base_url, '/parameters')
         self.parameter_group = _BaseClient(base_url, '/parameter-groups')
-        self.runner = _BaseClient(base_url, '/run')
+        self.runner = _RunnerClient(base_url)
         self.step = _BaseClient(base_url, '/steps')
         self.test_case = _BaseClient(base_url, '/test-cases')
         self.test_case_run = _BaseClient(base_url, '/test-runs')

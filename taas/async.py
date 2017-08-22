@@ -6,7 +6,7 @@ def make_celery(app=None):
     app = app or create_app()
     celery = Celery(
         app.import_name,
-        backend=app.config['CELERY_RESULT_BACKEND'],
+        backend=app.config['CELERY_BACKEND'],
         broker=app.config['CELERY_BROKER_URL'],
     )
     celery.conf.update(app.config)
