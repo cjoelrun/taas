@@ -1,7 +1,7 @@
 from flask import Blueprint, request
-from taas.database import db
-from taas.execution_run.models import ExecutionRun
-from taas.runner.service import RunService
+from taas.runner.service import create_test_case_run, create_test_suite_run, execute_test_case_run, execute_test_suite_run
+from taas.test_case.models import TestCase
+from taas.test_suite.models import TestSuite
 
 blueprint = Blueprint('runner', __name__, url_prefix='/run')
 
@@ -9,23 +9,16 @@ blueprint = Blueprint('runner', __name__, url_prefix='/run')
 @blueprint.route('/test-cases/<db_id>', methods=['POST'])
 def run_test_case(db_id):
     from taas.test_run.schemas import test_run_schema
-    test_run = RunService().run_test_case(db_id)
+    test_case = TestCase.query.get(db_id)
+    test_run = create_test_case_run(test_case, request.json['parameter_id'])
+    execute_test_case_run(test_run)
     return test_run_schema.dumps(test_run).data, 200
-
-
-@blueprint.route('/execution-runs/<db_id>/finish', methods=['POST'])
-def finish_execution_run(db_id):
-    print('Finishing execution run {}'.format(db_id))
-    execution_run = ExecutionRun.query.get(db_id)
-    if execution_run.status == 'Success':
-        RunService().run_next_step(execution_run.test_run_id)
-    else:
-        RunService().finish_test_case_run(execution_run.test_run_id)
-    return '', 200
 
 
 @blueprint.route('/test-suites/<db_id>', methods=['POST'])
 def run_test_suite(db_id):
     from taas.test_suite_run.schemas import test_suite_run_schema
-    test_suite_run = RunService().run_test_suite(db_id)
+    test_suite = TestSuite.query.get(db_id)
+    test_suite_run = create_test_suite_run(test_suite, request.json['parameter_id'])
+    execute_test_suite_run(test_suite_run)
     return test_suite_run_schema.dumps(test_suite_run).data, 200
