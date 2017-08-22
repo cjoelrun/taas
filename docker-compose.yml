@@ -16,3 +16,17 @@ db:
     POSTGRES_PASSWORD: 'mysecretpassword'
   volumes:
     - /tmp/usr/local/var/postgres:/var/lib/postgresql/data
+
+celery:
+  build: .
+  links:
+    - server
+    - rabbitmq
+  command: 'celery -A taas.tasks worker -l info -B'
+  environment:
+    API_CALLBACK_URL: 'http://server:5000'
+    CELERY_BROKER_HOST: 'rabbitmq'
+    CELERY_BROKER_USER: 'guest'
+
+rabbitmq:
+  image: rabbitmq:alpine
