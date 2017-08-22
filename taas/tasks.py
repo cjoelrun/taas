@@ -1,5 +1,6 @@
 import time
 
+from celery.schedules import crontab
 from taas.async import celery
 from celery.utils.log import get_task_logger
 from taas.client import TaasClient
@@ -47,3 +48,22 @@ def run_test_suite(test_suite_run_id, delay=0):
     for case_run_id in test_suite_run['test_case_runs']:
         time.sleep(delay)  # y tho
         run_test_case.delay(case_run_id)
+
+
+@celery.task
+def finish_test_suites():
+    logger.info('Finishing test suites.')
+
+    taas_client = TaasClient(celery.callback_url)
+    taas_client.runner.finish_test_suites()
+
+
+celery.conf.beat_schedule = {
+    'finish-test-suites': {
+        'task': 'taas.tasks.finish_test_suites',
+        'schedule': crontab(),
+        'args': None
+    }
+}
+
+celery.conf.timezone = 'UTC'
