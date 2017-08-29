@@ -6,6 +6,7 @@ from taas import test_case, execution, execution_run, \
 from taas.database import db
 from taas.serialization import ma
 from taas.settings import DevConfig
+from taas.strategies import strategy_loader
 
 
 def create_app(config=DevConfig):
@@ -16,6 +17,8 @@ def create_app(config=DevConfig):
     db.create_all(app=app)
     ma.init_app(app)
     register_blueprints(app)
+
+    strategy_loader.load_strategies([])
 
     return app
 
