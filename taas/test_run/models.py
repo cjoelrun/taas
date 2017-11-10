@@ -10,6 +10,7 @@ class TestRun(Model):
     message = db.Column(db.String)
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
+    task_id = db.Column(db.String)
     # TODO: Constrain
     status = db.Column(db.String)
     runtime_data = db.Column(JSONB)

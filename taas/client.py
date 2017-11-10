@@ -49,6 +49,14 @@ class _RunnerClient:
         response = requests.post(self._base_url+'/run/test-suites/finish')
         return
 
+    def cancel_test_case_run(self, case_run_id):
+        response = requests.post(self._base_url+'/run/test-case-runs/{}/cancel'.format(case_run_id))
+        return response.json()
+
+    def cancel_test_suite_run(self, suite_run_id):
+        response = requests.post(self._base_url + '/run/test-suite-runs/{}/cancel'.format(suite_run_id))
+        return response.json()
+
 
 class TaasClient:
     def __init__(self, base_url):

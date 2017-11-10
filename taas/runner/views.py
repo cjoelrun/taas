@@ -1,8 +1,8 @@
 from flask import Blueprint, request
-from taas.database import db
 from taas.parameter.models import Parameter
-from taas.runner.service import create_test_case_run, create_test_suite_run, execute_test_case_run, execute_test_suite_run
+from taas.runner.service import *
 from taas.test_case.models import TestCase
+from taas.test_run.models import TestRun
 from taas.test_suite.models import TestSuite
 from taas.test_suite_run.models import TestSuiteRun
 
@@ -25,6 +25,14 @@ def run_test_case(db_id):
     return test_run_schema.dumps(test_run).data, 200
 
 
+@blueprint.route('/test-case-runs/<db_id>/cancel', methods=['POST'])
+def cancel_case_run(db_id):
+    from taas.test_run.schemas import test_run_schema
+    test_run = TestRun.query.get(db_id)
+    cancel_test_case_run(test_run)
+    return test_run_schema.dumps(test_run).data, 200
+
+
 @blueprint.route('/test-suites/<db_id>', methods=['POST'])
 def run_test_suite(db_id):
     from taas.test_suite_run.schemas import test_suite_run_schema
@@ -38,6 +46,14 @@ def run_test_suite(db_id):
 
     test_suite_run = create_test_suite_run(test_suite, parameter_id)
     execute_test_suite_run(test_suite_run)
+    return test_suite_run_schema.dumps(test_suite_run).data, 200
+
+
+@blueprint.route('/test-suite-runs/<db_id>/cancel', methods=['POST'])
+def cancel_suite_run(db_id):
+    from taas.test_suite_run.schemas import test_suite_run_schema
+    test_suite_run = TestSuiteRun.query.get(db_id)
+    cancel_test_suite_run(test_suite_run)
     return test_suite_run_schema.dumps(test_suite_run).data, 200
 
 
