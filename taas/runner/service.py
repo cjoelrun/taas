@@ -41,9 +41,34 @@ def create_test_case_run(test_case, parameter_id):
 
 def execute_test_suite_run(test_suite_run):
     from taas.tasks import run_test_suite
-    run_test_suite.delay(test_suite_run.id)
+    task = run_test_suite.delay(test_suite_run.id)
+    test_suite_run.task_id = task.id
+    db.session.add(test_suite_run)
+    db.session.commit()
 
 
 def execute_test_case_run(test_case_run):
     from taas.tasks import run_test_case
-    run_test_case.delay(test_case_run.id)
+    task = run_test_case.delay(test_case_run.id)
+    test_case_run.task_id = task.id
+    db.session.add(test_case_run)
+    db.session.commit()
+
+
+def cancel_test_case_run(test_case_run):
+    from taas.async import celery
+    celery.control.revoke(test_case_run.task_id, terminate=True)
+    test_case_run.status = 'Cancelled'
+    db.session.add(test_case_run)
+    db.session.commit()
+
+
+def cancel_test_suite_run(test_suite_run):
+    from taas.async import celery
+    celery.control.revoke(test_suite_run.task_id, terminate=True)
+    test_suite_run.status = 'Cancelled'
+    db.session.add(test_suite_run)
+    db.session.commit()
+    running_cases = [rc for rc in test_suite_run.test_case_runs if rc.status is None or rc.status == 'Running']
+    for rc in running_cases:
+        cancel_test_case_run(rc)
