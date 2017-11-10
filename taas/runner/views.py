@@ -46,8 +46,10 @@ def finish_test_suite_runs():
     unfinished_suite_runs = TestSuiteRun.query.filter(TestSuiteRun.status == 'Running')
     for suite_run in unfinished_suite_runs:
         running_cases = [rc for rc in suite_run.test_case_runs if rc.status is None or rc.status == 'Running']
-        if len(running_cases) == 0:
-            suite_run.status = 'Finished'
-            db.session.commit()
+        if len(running_cases) != 0:
+            continue
+        is_success = all(tc.status == 'Success' for tc in suite_run.test_case_runs)
+        suite_run.status = 'Success' if is_success else 'Failed'
+        db.session.commit()
 
     return '', 200
