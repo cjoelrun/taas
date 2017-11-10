@@ -4,17 +4,8 @@ class BaseStrategy(object):
         self._parameters = parameters
         self._execution_data = execution_data
 
-    def set_up(self):
-        pass
-
-    def perform_action(self):
+    def execute(self):
         raise NotImplementedError
-
-    def perform_validation(self):
-        raise NotImplementedError
-
-    def tear_down(self):
-        pass
 
 
 class Result:
