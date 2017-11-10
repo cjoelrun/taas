@@ -37,12 +37,12 @@ class _RunnerClient:
     def __init__(self, base_url):
         self._base_url = base_url
 
-    def run_test_case(self, db_id):
-        response = requests.post(self._base_url+'/run/test-cases/{}'.format(db_id))
+    def run_test_case(self, case_id, parameter_id):
+        response = requests.post(self._base_url+'/run/test-cases/{}'.format(case_id), json={'parameter_id': parameter_id})
         return response.json()
 
-    def run_test_suite(self, db_id):
-        response = requests.post(self._base_url+'/run/test-suites/{}'.format(db_id))
+    def run_test_suite(self, case_id, parameter_id):
+        response = requests.post(self._base_url+'/run/test-suites/{}'.format(case_id), json={'parameter_id': parameter_id})
         return response.json()
 
     def finish_test_suites(self):
