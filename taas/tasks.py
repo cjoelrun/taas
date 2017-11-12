@@ -19,19 +19,20 @@ def run_test_case(test_case_run_id):
     test_case_run = taas_client.test_case_run.get_by_id(test_case_run_id)
     test_case_run['status'] = 'Running'
     taas_client.test_case_run.update(test_case_run_id, test_case_run)
-    logger.info('Running test case run {}'.format(test_case_run_id))
 
-    strategy_factory = StrategyFactory({})
+    parameters = taas_client.parameter.get_by_id(test_case_run['parameter_id'])
+    strategy_factory = StrategyFactory(parameters['data'])
+    logger.info('Running test case run {} with params {}'.format(test_case_run_id, parameters['data']))
+    runtime_data = {}
     for execution_run_id in test_case_run['execution_runs']:
         try:
             execution_run = taas_client.execution_run.get_by_id(execution_run_id)
             step = taas_client.step.get_by_id(execution_run['step'])
             execution = taas_client.execution.get_by_id(step['execution'])
-            parameters = taas_client.parameter.get_by_id(test_case_run['parameter_id'])
-            logger.info('Running strategy {} with {}'.format(execution['strategy'], parameters['data']))
-            strategy = strategy_factory.create_strategy(execution['strategy'], parameters['data'])
+            logger.info('Running strategy {} with {}'.format(execution['strategy'], execution['data']))
+            strategy = strategy_factory.create_strategy(execution['strategy'], execution['data'], runtime_data)
             result = strategy.execute()
-            logger.info('Finished strategy {} with {}'.format(execution['strategy'], parameters['data']))
+            logger.info('Finished strategy {} with {}'.format(execution['strategy'], execution['data']))
             logger.info('Strategy {} result: {} -- {}'.format(execution['strategy'], result.success, result.message))
         except Exception as err:
             logger.error('Strategy execution error: {}'.format(err.message))
