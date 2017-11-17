@@ -6,7 +6,6 @@ from taas import test_case, execution, execution_run, \
 from taas.database import db
 from taas.serialization import ma
 from taas.settings import DevConfig
-from taas.strategies import strategy_loader
 
 
 def create_app(config=DevConfig):
@@ -17,9 +16,6 @@ def create_app(config=DevConfig):
     db.create_all(app=app)
     ma.init_app(app)
     register_blueprints(app)
-
-    strategy_loader.load_strategies([])
-
     return app
 
 
@@ -39,5 +35,3 @@ def register_blueprints(app):
 def create_db(config):
     if not database_exists(config.SQLALCHEMY_DATABASE_URI):
         create_database(config.SQLALCHEMY_DATABASE_URI)
-
-app = create_app()
