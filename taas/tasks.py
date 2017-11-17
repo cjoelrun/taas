@@ -1,7 +1,7 @@
 import time
 
-from celery.schedules import crontab
 from taas.async import celery
+from celery.schedules import crontab
 from celery.utils.log import get_task_logger
 from taas.client import TaasClient
 from taas.strategies.base_strategy import Result
@@ -73,12 +73,13 @@ def finish_test_suites():
     taas_client.runner.finish_test_suites()
 
 
-celery.conf.beat_schedule = {
-    'finish-test-suites': {
-        'task': 'taas.tasks.finish_test_suites',
-        'schedule': crontab(),
-        'args': None
+def add_scheduled_tasks(celery_worker):
+    celery_worker.conf.beat_schedule = {
+        'finish-test-suites': {
+            'task': 'taas.tasks.finish_test_suites',
+            'schedule': crontab(),
+            'args': None
+        }
     }
-}
 
-celery.conf.timezone = 'UTC'
+    celery_worker.conf.timezone = 'UTC'
