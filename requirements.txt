@@ -6,3 +6,4 @@ marshmallow-sqlalchemy
 flask-marshmallow
 sqlalchemy-utils
 celery
+argh
